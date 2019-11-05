@@ -24,3 +24,28 @@ WORKDIR /app
 # Test entrypoint
 CMD ["python3", "manage.py", "test", "--noinput", "--settings=todobackend.settings_test"]
 
+# Release stage
+FROM alpine
+LABEL aaplication=todobackend
+
+# Install OS dependencies
+RUN apk add --no-cache python3 mariadb-client bash curl bats jq
+
+# Create app user
+RUN addgroup -g 1000 app && \
+    adduser -u 1000 -G app -D app
+
+# Copy and instll applicaton source and pre-built dependencies
+COPY --from=test --chown=app:app /build /build
+COPY --from=test --chown=app:app /app /app
+RUN pip3 install -r /build/requirements.txt -f /build --no-index --no-cache-dir
+RUN rm -rf build
+
+# Create the public volume
+RUN mkdir /public
+RUN chown app:app /public
+VOLUME /public
+
+# Set working directory and application user
+WORKDIR /app
+USER app

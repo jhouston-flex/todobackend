@@ -1,0 +1,16 @@
+# Ignore the SQLite db files
+**/*.sqlite3
+
+# Ignore test output and private code coverage files
+**/*.xml
+**/.coverage
+
+# Ignore compiled python files
+**/*.pyc
+**/pycache
+
+# Ignore macOS metadata
+**/.DS_Store
+
+# Ignore IntelliJ files
+**/*.iml
